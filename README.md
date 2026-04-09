@@ -15,7 +15,14 @@ Columns — Samples \
 First 5 annotation columns are removed before analysis
 
 # Pipeline Steps
-CPM Matrix (non-zero genes) > Remove annotation columns (columns 1–5) > Log2 transformation: log2(CPM + 1) > Scaling across samples: scale() > PCA using prcomp() on transposed matrix > Extract PC scores + % variance explained > Plot PC1 vs PC2 with condition labels (ggplot2) > Export as high-resolution TIFF (1200 dpi)
+CPM Matrix (non-zero genes) > 
+Remove annotation columns (columns 1–5) > 
+Log2 transformation: log2(CPM + 1) > 
+Scaling across samples: scale() > 
+PCA using prcomp() on transposed matrix > 
+Extract PC scores + % variance explained > 
+Plot PC1 vs PC2 with condition labels (ggplot2) > 
+Export as high-resolution TIFF (1200 dpi)
 
 # Notes
 Only non-zero genes are included in the CPM matrix to reduce noise and improve PCA resolution. \
@@ -36,7 +43,7 @@ library(dplyr)
 ```
 
 ```{r}
-PCA_B157 <- read.table(
+PCA <- read.table(
   "path to input.txt",
   header = TRUE,
   row.names = "GeneId",
@@ -45,17 +52,17 @@ PCA_B157 <- read.table(
 )
 
 # Remove annotation columns (adjust if needed)
-PCA_B157 <- PCA_B157[, -c(1:5)]
+PCA <- PCA[, -c(1:5)]
 ```
 
 ```{r}
 PCA_sample <- data.frame(
   condition = c("M16", "M16", "M16", "M24", "M24", "M24", "MY", "MY", "MY",
                 "W16", "W16", "W16", "W24", "W24", "W24", "WY", "WY", "WY"),
-  row.names = colnames(PCA_B157)
+  row.names = colnames(PCA)
 )
 
-PCA_cpm_log <- log2(PCA_B157 + 1)  # Log-transform to handle continuous values
+PCA_cpm_log <- log2(PCA + 1)  # Log-transform to handle continuous values
 PCA_cpm_scaled <- scale(PCA_cpm_log)  # Scale across samples
 ```
 
@@ -98,6 +105,6 @@ print(plot_PCA_CPM)
 ```
 
 ```{r}
-ggsave(filename = "PCA_CPM.tiff", path = "path to output folder", plot = plot_PCA_CPM, width = 12, height = 10, units = "in", dpi = 1200, device = "tiff", compression = "lzw")
+ggsave(filename = "PCA_CPM.tiff", path = "/path to output folder/", plot = plot_PCA_CPM, width = 12, height = 10, units = "in", dpi = 1200, device = "tiff", compression = "lzw")
 ```
 
